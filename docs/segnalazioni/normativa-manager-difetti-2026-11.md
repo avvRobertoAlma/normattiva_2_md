@@ -24,6 +24,7 @@ Per sbloccare i 21 servono tre correzioni all'importazione. In più ci sono due 
 | 9 | La conferma della spesa è una finestra nativa del browser | approvazioni | — |
 | 10 | «Approva gli atti spuntati» ha approvato tutti gli atti in coda, non solo quelli spuntati | approvazioni | — |
 | 11 | Non c'è modo di togliere dalla ricerca una fonte pubblicata per errore | d.P.R. 43/1973 | — |
+| 12 | Modifiche riportate da Normattiva solo in nota: in ricerca va il testo superato (art. 654 c.p.c. col «pretore», pene del c.p. in lire) | 119 articoli in 44 atti (107 già in ricerca) | — |
 
 I tre atti che da soli sbloccano più domanda sono il d.lgs. 50/2016, la l. 160/2019 e la l. 296/2006: 259 richieste.
 
@@ -168,6 +169,75 @@ Il 20/11 alle 14:55 erano spuntati 40 atti (2299 sintesi), ma il clic su «Appro
 
 Nella pagina della fonte ci sono solo «Riprendi il testo», «Scrivi le sintesi mancanti» e «Pubblica in ricerca». Il d.P.R. 43/1973 (fonte 270), abrogato, ora è in ricerca con 371 articoli «PROVVEDIMENTO ABROGATO»; serve un'azione «Togli dalla ricerca» (cancellazione dei documenti da OpenSearch), utile anche per gli altri abrogati.
 
+## Aggiornamento del 24/11/2026
+
+### 12. Modifiche che Normattiva riporta solo in nota: testo «vigente» non aggiornato
+
+**Il caso.** Un cliente ha segnalato due volte (ottobre e 23/11) un parere sull'art. 654 c.p.c. che cita come vigente il «decreto del conciliatore, del pretore o del presidente». Il testo viene così da Normattiva, ed è uguale in ogni formato: pagina del testo vigente, tutte le versioni dell'articolo nel tempo, esportazione Akoma Ntoso. L'art. 103 del d.lgs. 51/1998 ha sostituito «del giudice di pace, del pretore o del presidente» con «del giudice che ha pronunciato l'ingiunzione», ma il codice diceva «conciliatore»: le parole non coincidevano e Normattiva non ha applicato la modifica. La riporta solo nella nota «AGGIORNAMENTO (88)». Il manager toglie le note, quindi in ricerca va il testo superato, e la sintesi AI è scritta su quel testo. Anche `search_articles` della MCP restituisce oggi l'art. 654 col «pretore».
+
+**Quanto è esteso.** Scansione del 24/11/2026 su tutte le 470 fonti del manager che hanno un URN (40.259 articoli, sola lettura da Normattiva, nessuna sintesi): **119 articoli in 44 atti**. Di questi, 107 articoli in 39 atti sono già in ricerca; 12 articoli in 5 atti sono in «Da approvare». I casi più gravi: le pene del codice penale ancora in lire (artt. 625, 628, 639, 646: furto aggravato, rapina, appropriazione indebita, imbrattamento); la «patria potestà» nel codice civile (artt. 343, 348, 350, 356, 417); il codice della navigazione (21 articoli); il testo unico ambientale e il testo unico stupefacenti.
+
+**Come si riconosce.** La nota è richiamata nel testo, per esempio «(88)», e contiene la formula fissa «le parole "X" sono sostituite dalle seguenti: "Y"» (oppure «sono soppresse»). La modifica non è applicata se Y non compare nel testo (o se X, soppressa, c'è ancora). Vanno escluse le note che parlano di un altro articolo. Su un campione di 25 casi verificati a mano, 2 erano falsi allarmi: TUB art. 111, dove l'importo è stato poi alzato di nuovo ed è già nel testo fra (( )), e art. 145, dove il comma è stato poi abrogato. La regola è nel backend, PR in arrivo: `unapplied_amendments` in `api/components/normattiva_fetcher.py`.
+
+**Che cosa servirebbe nel manager.**
+1. All'importazione e a ogni aggiornamento, segnare l'articolo come «testo non aggiornato», con la nota.
+2. Dare al modello che scrive la sintesi anche la nota, con l'istruzione di applicare la modifica. In alternativa, mettere l'articolo in una coda «da correggere a mano» dove si scrive il testo corretto, controllato sulla Gazzetta Ufficiale (l'inserimento a mano esiste già).
+3. Nell'indice, pubblicare il testo corretto, o almeno l'avviso in testa al testo, così lo vedono anche la MCP e la v3, che sceglie le fonti dalla sintesi.
+4. Rifare le sintesi dei 107 articoli già in ricerca (spesa piccola) e controllare i 12 in «Da approvare» prima dell'approvazione.
+5. Farlo prima che il codice penale entri in ricerca (PR backend #1097): altrimenti la ricerca darà come vigenti pene in lire.
+
+Il controllo delle modifiche di Normattiva non segnalerà mai questi articoli, perché per Normattiva la modifica è già registrata.
+
+**Elenco completo** (fonte nel manager, stato, numero di articoli, articoli):
+
+| Fonte | Stato | N. | Articoli |
+|---|---|---|---|
+| `/fonti/245/` Regio Decreto 327/1942 | in ricerca | 21 | 1162, 1163, 1164, 1169, 1170, 1171, 1178, 1179, 1180, 1193, 1196, 1198, 1199, 1200, 1201, 1204, 1207, 1208, 1209, 1211, 1213 |
+| `/fonti/49/` Decreto Legislativo 152/2006 | in ricerca | 9 | 3, 8, 32-bis, 224, 252, 275, 279, 281, 298 |
+| `/fonti/18/` Codice Civile | in ricerca | 9 | 252, 343, 348, 350, 356, 401, 417, 468, 2465 |
+| `/fonti/263/` Decreto del Presidente della Repubblica 309/1990 | in ricerca | 7 | 31, 35, 41, 46, 47, 54, 70 |
+| `/fonti/432/` Legge 110/1975 | in ricerca | 6 | 4, 10, 15, 19, 22, 23 |
+| `/fonti/372/` Decreto del Presidente della Repubblica 495/1992 | in ricerca | 5 | 10, 11, 12, 13, 16 |
+| `/fonti/297/` Decreto Legislativo 173/2024 | da approvare | 5 | 30, 31, 33, 36, 67 |
+| `/fonti/17/` Codice Penale | in ricerca | 4 | 625, 628, 639, 646 |
+| `/fonti/214/` Decreto del Presidente della Repubblica 1124/1965 | in ricerca | 3 | 139, 175, 246 |
+| `/fonti/21/` Decreto del Presidente della Repubblica 380/2001 | in ricerca | 3 | 44, 46, 48 |
+| `/fonti/234/` Decreto Legislativo 471/1997 | in ricerca | 3 | 6, 9, 11 |
+| `/fonti/48/` Decreto Legislativo 58/1998 | in ricerca | 3 | 83-sexies, 147-ter, 194-bis |
+| `/fonti/52/` Decreto Legislativo 81/2008 | in ricerca | 3 | 26, 137, 222 |
+| `/fonti/225/` Decreto Legislativo 66/2010 | da approvare | 3 | 725, 1008, 2058 |
+| `/fonti/14/` Codice di Procedura Civile | in ricerca | 3 | 67, 118, 654 |
+| `/fonti/227/` Decreto Legge 138/2011 | in ricerca | 2 | 1, 8 |
+| `/fonti/30/` Decreto Legislativo 36/2023 | in ricerca | 2 | 67, 202 |
+| `/fonti/300/` Decreto Legislativo 123/2025 | da approvare | 2 | 110, 112 |
+| `/fonti/8/` Decreto del Presidente della Repubblica 600/1973 | in ricerca | 1 | 25 |
+| `/fonti/6/` Decreto del Presidente della Repubblica 602/1973 | in ricerca | 1 | 43-ter |
+| `/fonti/4/` Decreto del Presidente della Repubblica 917/1986 | in ricerca | 1 | 47 |
+| `/fonti/199/` Decreto Legge 98/2011 | in ricerca | 1 | 21 |
+| `/fonti/206/` Decreto Legge 95/2012 | in ricerca | 1 | 16-bis |
+| `/fonti/24/` Decreto Legge 77/2021 | in ricerca | 1 | 46 |
+| `/fonti/365/` Decreto Legge 21/2022 | in ricerca | 1 | 17 |
+| `/fonti/55/` Decreto Legislativo 285/1992 | in ricerca | 1 | 123 |
+| `/fonti/342/` Decreto Legislativo 504/1995 | in ricerca | 1 | 39-octies |
+| `/fonti/67/` Decreto Legislativo 286/1998 | in ricerca | 1 | 10 |
+| `/fonti/44/` Decreto Legislativo 165/2001 | in ricerca | 1 | 34-bis |
+| `/fonti/82/` Decreto Legislativo 276/2003 | in ricerca | 1 | 14 |
+| `/fonti/2/` Decreto Legislativo 196/2003 | in ricerca | 1 | 79 |
+| `/fonti/142/` Decreto Legislativo 170/2004 | in ricerca | 1 | 1 |
+| `/fonti/47/` Decreto Legislativo 209/2005 | in ricerca | 1 | 283 |
+| `/fonti/72/` Decreto Legislativo 81/2015 | in ricerca | 1 | 2 |
+| `/fonti/115/` Legge 108/1996 | in ricerca | 1 | 17 |
+| `/fonti/105/` Legge 59/1997 | in ricerca | 1 | 11 |
+| `/fonti/236/` Legge 289/2002 | in ricerca | 1 | 22 |
+| `/fonti/97/` Legge 3/2012 | in ricerca | 1 | 13 |
+| `/fonti/220/` Legge 147/2013 | da approvare | 1 | 1 |
+| `/fonti/211/` Legge 178/2020 | da approvare | 1 | 1 |
+| `/fonti/87/` Legge 193/2024 | in ricerca | 1 | 23 |
+| `/fonti/200/` Regio Decreto 773/1931 | in ricerca | 1 | 28 |
+| `/fonti/373/` Regio Decreto 12/1941 | in ricerca | 1 | 51 |
+| `/fonti/288/` Regio Decreto 318/1942 | in ricerca | 1 | 38 |
+
+
 ## Ordine suggerito
 
 1. Problema 1, a partire dal d.lgs. 50/2016.
@@ -176,5 +246,6 @@ Nella pagina della fonte ci sono solo «Riprendi il testo», «Scrivi le sintesi
 4. Problemi 4 e 5.
 5. Problemi 10 e 11, subito: il 10 ha già fatto spendere sintesi inutili.
 6. Problemi 6 e 8 (Costituzione), poi 7 e 9.
+7. Problema 12 prima che il codice penale entri in ricerca; per gli atti già in ricerca, intanto, partire da c.p.c. 654, c.p. e c.c.
 
 Dopo ogni correzione gli atti vanno riscaricati e ricontrollati prima dell'approvazione, perché il numero di sintesi cambierà.
