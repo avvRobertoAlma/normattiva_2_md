@@ -24,7 +24,7 @@ Per sbloccare i 21 servono tre correzioni all'importazione. In più ci sono due 
 | 9 | La conferma della spesa è una finestra nativa del browser | approvazioni | — |
 | 10 | «Approva gli atti spuntati» ha approvato tutti gli atti in coda, non solo quelli spuntati | approvazioni | — |
 | 11 | Non c'è modo di togliere dalla ricerca una fonte pubblicata per errore | d.P.R. 43/1973 | — |
-| 12 | Modifiche riportate da Normattiva solo in nota: in ricerca va il testo superato (art. 654 c.p.c. col «pretore», pene del c.p. in lire) | 119 articoli in 44 atti (107 già in ricerca) | — |
+| 12 | Modifiche riportate da Normattiva solo in nota: in ricerca va il testo superato (art. 654 c.p.c. col «pretore», pene del c.p. in lire) | 139 articoli in 50 atti (127 già in ricerca) | — |
 
 I tre atti che da soli sbloccano più domanda sono il d.lgs. 50/2016, la l. 160/2019 e la l. 296/2006: 259 richieste.
 
@@ -175,15 +175,25 @@ Nella pagina della fonte ci sono solo «Riprendi il testo», «Scrivi le sintesi
 
 **Il caso.** Un cliente ha segnalato due volte (ottobre e 23/11) un parere sull'art. 654 c.p.c. che cita come vigente il «decreto del conciliatore, del pretore o del presidente». Il testo viene così da Normattiva, ed è uguale in ogni formato: pagina del testo vigente, tutte le versioni dell'articolo nel tempo, esportazione Akoma Ntoso. L'art. 103 del d.lgs. 51/1998 ha sostituito «del giudice di pace, del pretore o del presidente» con «del giudice che ha pronunciato l'ingiunzione», ma il codice diceva «conciliatore»: le parole non coincidevano e Normattiva non ha applicato la modifica. La riporta solo nella nota «AGGIORNAMENTO (88)». Il manager toglie le note, quindi in ricerca va il testo superato, e la sintesi AI è scritta su quel testo. Anche `search_articles` della MCP restituisce oggi l'art. 654 col «pretore».
 
-**Quanto è esteso.** Scansione del 24/11/2026 su tutte le 470 fonti del manager che hanno un URN (40.259 articoli, sola lettura da Normattiva, nessuna sintesi): **119 articoli in 44 atti**. Di questi, 107 articoli in 39 atti sono già in ricerca; 12 articoli in 5 atti sono in «Da approvare». I casi più gravi: le pene del codice penale ancora in lire (artt. 625, 628, 639, 646: furto aggravato, rapina, appropriazione indebita, imbrattamento); la «patria potestà» nel codice civile (artt. 343, 348, 350, 356, 417); il codice della navigazione (21 articoli); il testo unico ambientale e il testo unico stupefacenti.
+**Quanto è esteso.** Scansione del 24/11/2026 su tutte le 470 fonti del manager che hanno un URN (40.259 articoli, sola lettura da Normattiva, nessuna sintesi), poi verificata a mano: **139 articoli in 50 atti**. Di questi, 127 articoli in 44 atti sono già in ricerca; 12 articoli in 6 atti sono in «Da approvare» (i testi unici tributari del 2027). Nessuno è fra le fonti di contesto. Esempi:
+- pene e sanzioni ancora in lire: codice penale (artt. 588 rissa, 625 furto aggravato, 628 rapina, 639 imbrattamento, 646 appropriazione indebita), l. 110/1975 sulle armi, codice della navigazione (21 articoli), d.P.R. 1124/1965, art. 52 d.lgs. 151/2001;
+- d.P.R. 600/1973, art. 25: ritenuta d'acconto sui compensi dei professionisti al «15 per cento» (vigente: 20 per cento, l. 449/1997). Il modello di produzione, con quel testo, risponde 15%;
+- codice civile: «patria potestà» (artt. 343, 348, 350, 356, 417), «figli naturali» (artt. 580, 594), art. 2465;
+- art. 8 d.l. 138/2011: l'elenco delle materie escluse dalla contrattazione di prossimità senza i licenziamenti in gravidanza e per congedo;
+- ministeri e uffici soppressi, accise dei tabacchi ferme ai valori originari (art. 39-octies d.lgs. 504/1995).
 
-**Come si riconosce.** La nota è richiamata nel testo, per esempio «(88)», e contiene la formula fissa «le parole "X" sono sostituite dalle seguenti: "Y"» (oppure «sono soppresse»). La modifica non è applicata se Y non compare nel testo (o se X, soppressa, c'è ancora). Vanno escluse le note che parlano di un altro articolo. Su un campione di 25 casi verificati a mano, 2 erano falsi allarmi: TUB art. 111, dove l'importo è stato poi alzato di nuovo ed è già nel testo fra (( )), e art. 145, dove il comma è stato poi abrogato. La regola è nel backend, PR in arrivo: `unapplied_amendments` in `api/components/normattiva_fetcher.py`.
+**Come si riconosce.** La nota è richiamata nel testo, per esempio «(88)», e contiene la formula fissa «le parole "X" sono sostituite dalle seguenti: "Y"» (anche al singolare, «la parola … è sostituita dalla seguente»), «sono soppresse» oppure «dopo le parole … sono inserite le seguenti …». La modifica non è applicata se il testo atteso non c'è. Tre cautele, emerse dalla verifica a mano:
+1. **catene**: se una nota successiva cambia le parole introdotte da una precedente, le due modifiche si compongono. Nell'art. 6 d.lgs. 471/1997 il 2020 porta la sanzione al 90%, il 2024 al 70%, e nel testo c'è già «settanta»: nessun difetto. Nell'art. 628 c.p. il 2017 e il 2019 non sono applicati: vanno segnalati tutti e due;
+2. **modifiche future**: non si segnala una modifica la cui nota, o una nota dello stesso atto, ha una data futura (art. 51 r.d. 12/1941, tribunale per le persone, i minorenni e le famiglie rinviato al 18/10/2027). La data va cercata fuori dalle parole sostituite: «31 dicembre 2028» nell'art. 8 d.lgs. 152/2006 è il nuovo termine, non la decorrenza;
+3. **note di altri articoli**: si escludono le novelle che nominano un articolo diverso.
+
+Falso allarme noto: art. 573 c.c., già riscritto in altro modo. La regola è nel backend (PR avvRobertoAlma/buddalaw-backend#1354, `unapplied_amendments` in `api/components/normattiva_fetcher.py`): il manager può usare la stessa.
 
 **Che cosa servirebbe nel manager.**
 1. All'importazione e a ogni aggiornamento, segnare l'articolo come «testo non aggiornato», con la nota.
 2. Dare al modello che scrive la sintesi anche la nota, con l'istruzione di applicare la modifica. In alternativa, mettere l'articolo in una coda «da correggere a mano» dove si scrive il testo corretto, controllato sulla Gazzetta Ufficiale (l'inserimento a mano esiste già).
 3. Nell'indice, pubblicare il testo corretto, o almeno l'avviso in testa al testo, così lo vedono anche la MCP e la v3, che sceglie le fonti dalla sintesi.
-4. Rifare le sintesi dei 107 articoli già in ricerca (spesa piccola) e controllare i 12 in «Da approvare» prima dell'approvazione.
+4. Rifare le sintesi dei 127 articoli già in ricerca (spesa piccola) e controllare i 12 in «Da approvare» prima dell'approvazione.
 5. Farlo prima che il codice penale entri in ricerca (PR backend #1097): altrimenti la ricerca darà come vigenti pene in lire.
 
 Il controllo delle modifiche di Normattiva non segnalerà mai questi articoli, perché per Normattiva la modifica è già registrata.
@@ -193,48 +203,54 @@ Il controllo delle modifiche di Normattiva non segnalerà mai questi articoli, p
 | Fonte | Stato | N. | Articoli |
 |---|---|---|---|
 | `/fonti/245/` Regio Decreto 327/1942 | in ricerca | 21 | 1162, 1163, 1164, 1169, 1170, 1171, 1178, 1179, 1180, 1193, 1196, 1198, 1199, 1200, 1201, 1204, 1207, 1208, 1209, 1211, 1213 |
-| `/fonti/49/` Decreto Legislativo 152/2006 | in ricerca | 9 | 3, 8, 32-bis, 224, 252, 275, 279, 281, 298 |
-| `/fonti/18/` Codice Civile | in ricerca | 9 | 252, 343, 348, 350, 356, 401, 417, 468, 2465 |
+| `/fonti/18/` Codice Civile | in ricerca | 12 | 252, 343, 348, 350, 356, 401, 417, 468, 573, 580, 594, 2465 |
+| `/fonti/49/` Decreto Legislativo 152/2006 | in ricerca | 10 | 3, 8, 13, 32-bis, 224, 252, 275, 279, 281, 298 |
 | `/fonti/263/` Decreto del Presidente della Repubblica 309/1990 | in ricerca | 7 | 31, 35, 41, 46, 47, 54, 70 |
+| `/fonti/297/` Decreto Legislativo 173/2024 | da approvare | 6 | 30, 31, 33, 36, 37, 67 |
 | `/fonti/432/` Legge 110/1975 | in ricerca | 6 | 4, 10, 15, 19, 22, 23 |
 | `/fonti/372/` Decreto del Presidente della Repubblica 495/1992 | in ricerca | 5 | 10, 11, 12, 13, 16 |
-| `/fonti/297/` Decreto Legislativo 173/2024 | da approvare | 5 | 30, 31, 33, 36, 67 |
-| `/fonti/17/` Codice Penale | in ricerca | 4 | 625, 628, 639, 646 |
+| `/fonti/17/` Codice Penale | in ricerca | 5 | 588, 625, 628, 639, 646 |
+| `/fonti/14/` Codice di Procedura Civile | in ricerca | 5 | 67, 118, 137, 654, 769 |
+| `/fonti/48/` Decreto Legislativo 58/1998 | in ricerca | 4 | 83-sexies, 147-ter, 190, 194-bis |
+| `/fonti/52/` Decreto Legislativo 81/2008 | in ricerca | 4 | 26, 137, 222, 232 |
 | `/fonti/214/` Decreto del Presidente della Repubblica 1124/1965 | in ricerca | 3 | 139, 175, 246 |
 | `/fonti/21/` Decreto del Presidente della Repubblica 380/2001 | in ricerca | 3 | 44, 46, 48 |
-| `/fonti/234/` Decreto Legislativo 471/1997 | in ricerca | 3 | 6, 9, 11 |
-| `/fonti/48/` Decreto Legislativo 58/1998 | in ricerca | 3 | 83-sexies, 147-ter, 194-bis |
-| `/fonti/52/` Decreto Legislativo 81/2008 | in ricerca | 3 | 26, 137, 222 |
-| `/fonti/225/` Decreto Legislativo 66/2010 | da approvare | 3 | 725, 1008, 2058 |
-| `/fonti/14/` Codice di Procedura Civile | in ricerca | 3 | 67, 118, 654 |
+| `/fonti/55/` Decreto Legislativo 285/1992 | in ricerca | 3 | 95, 107, 123 |
+| `/fonti/8/` Decreto del Presidente della Repubblica 600/1973 | in ricerca | 2 | 23, 25 |
+| `/fonti/6/` Decreto del Presidente della Repubblica 602/1973 | in ricerca | 2 | 19, 43-ter |
+| `/fonti/4/` Decreto del Presidente della Repubblica 917/1986 | in ricerca | 2 | 10, 47 |
 | `/fonti/227/` Decreto Legge 138/2011 | in ricerca | 2 | 1, 8 |
+| `/fonti/199/` Decreto Legge 98/2011 | in ricerca | 2 | 12, 21 |
+| `/fonti/234/` Decreto Legislativo 471/1997 | in ricerca | 2 | 9, 11 |
 | `/fonti/30/` Decreto Legislativo 36/2023 | in ricerca | 2 | 67, 202 |
 | `/fonti/300/` Decreto Legislativo 123/2025 | da approvare | 2 | 110, 112 |
-| `/fonti/8/` Decreto del Presidente della Repubblica 600/1973 | in ricerca | 1 | 25 |
-| `/fonti/6/` Decreto del Presidente della Repubblica 602/1973 | in ricerca | 1 | 43-ter |
-| `/fonti/4/` Decreto del Presidente della Repubblica 917/1986 | in ricerca | 1 | 47 |
-| `/fonti/199/` Decreto Legge 98/2011 | in ricerca | 1 | 21 |
+| `/fonti/200/` Regio Decreto 773/1931 | in ricerca | 2 | 28, 109 |
+| `/fonti/196/` Decreto Legge 78/2010 | in ricerca | 1 | 47 |
 | `/fonti/206/` Decreto Legge 95/2012 | in ricerca | 1 | 16-bis |
 | `/fonti/24/` Decreto Legge 77/2021 | in ricerca | 1 | 46 |
 | `/fonti/365/` Decreto Legge 21/2022 | in ricerca | 1 | 17 |
-| `/fonti/55/` Decreto Legislativo 285/1992 | in ricerca | 1 | 123 |
 | `/fonti/342/` Decreto Legislativo 504/1995 | in ricerca | 1 | 39-octies |
 | `/fonti/67/` Decreto Legislativo 286/1998 | in ricerca | 1 | 10 |
+| `/fonti/62/` Decreto Legislativo 151/2001 | in ricerca | 1 | 52 |
 | `/fonti/44/` Decreto Legislativo 165/2001 | in ricerca | 1 | 34-bis |
 | `/fonti/82/` Decreto Legislativo 276/2003 | in ricerca | 1 | 14 |
 | `/fonti/2/` Decreto Legislativo 196/2003 | in ricerca | 1 | 79 |
 | `/fonti/142/` Decreto Legislativo 170/2004 | in ricerca | 1 | 1 |
 | `/fonti/47/` Decreto Legislativo 209/2005 | in ricerca | 1 | 283 |
+| `/fonti/225/` Decreto Legislativo 66/2010 | da approvare | 1 | 1008 |
 | `/fonti/72/` Decreto Legislativo 81/2015 | in ricerca | 1 | 2 |
-| `/fonti/115/` Legge 108/1996 | in ricerca | 1 | 17 |
+| `/fonti/50/` Decreto Legislativo 14/2019 | in ricerca | 1 | 25-sexies |
+| `/fonti/287/` Decreto Legislativo 175/2024 | in ricerca | 1 | 102 |
+| `/fonti/352/` Decreto Legislativo 141/2026 | da approvare | 1 | 94 |
 | `/fonti/105/` Legge 59/1997 | in ricerca | 1 | 11 |
 | `/fonti/236/` Legge 289/2002 | in ricerca | 1 | 22 |
 | `/fonti/97/` Legge 3/2012 | in ricerca | 1 | 13 |
 | `/fonti/220/` Legge 147/2013 | da approvare | 1 | 1 |
 | `/fonti/211/` Legge 178/2020 | da approvare | 1 | 1 |
 | `/fonti/87/` Legge 193/2024 | in ricerca | 1 | 23 |
-| `/fonti/200/` Regio Decreto 773/1931 | in ricerca | 1 | 28 |
-| `/fonti/373/` Regio Decreto 12/1941 | in ricerca | 1 | 51 |
+| `/fonti/12/` Decreto Ministeriale 44/2011 | in ricerca | 1 | 13 |
+| `/fonti/373/` Regio Decreto 12/1941 | in ricerca | 1 | 109 |
+| `/fonti/173/` Regio Decreto 267/1942 | in ricerca | 1 | 34 |
 | `/fonti/288/` Regio Decreto 318/1942 | in ricerca | 1 | 38 |
 
 
